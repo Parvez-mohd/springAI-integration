@@ -3,6 +3,7 @@ package com.practice.firstspringai.service;
 import java.util.Map;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
@@ -115,5 +116,18 @@ public class ChatServiceImpl implements ChatService {
                 .stream()
                 .content();
     }
+
+
+    public Flux<String> chatWithMemory(String conversationId, String message) {
+        return ollamaClient.prompt()
+                .user(message)
+                .advisors(advisor -> advisor.param(
+                        AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY, conversationId
+                ))
+                .stream()
+                .content();
+    }
     
+
+     
 }

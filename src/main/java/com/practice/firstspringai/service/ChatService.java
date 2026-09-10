@@ -13,4 +13,6 @@ public interface ChatService {
     String chatTemplate();
 
     Flux<String> streamChat(String query);
+
+    Flux<String> chatWithMemory(String id, String query);
 }

@@ -41,4 +41,12 @@ public class ChatClientApiController {
     public ResponseEntity<Flux<String>> streamChat(@RequestParam("q") String query ) {
         return ResponseEntity.ok(chatService.streamChat(query));
     }
+
+    @GetMapping("/chat-memory")
+    public ResponseEntity<Flux<String>> chatMemory(
+            @RequestParam(defaultValue = "default-session") String conversationId,
+            @RequestParam String message) {
+
+        return ResponseEntity.ok(chatService.chatWithMemory(conversationId, message));
+    }
 }

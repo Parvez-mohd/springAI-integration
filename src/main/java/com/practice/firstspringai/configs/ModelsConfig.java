@@ -4,14 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ModelsConfig {
+
+    @Bean
+    public ChatMemory chatMemory() {
+        return new InMemoryChatMemory();
+    }
 
 
     @Bean(name = "openAiChatClient")
@@ -25,9 +33,9 @@ public class ModelsConfig {
 
 
     @Bean(name = "ollamaChatClient")
-    public ChatClient ollamaChatClient(ChatModel ollamaChatModel) {
+    public ChatClient ollamaChatClient(ChatModel ollamaChatModel, ChatMemory chatMemory) {
         return ChatClient.builder(ollamaChatModel)
-        .defaultAdvisors(new SimpleLoggerAdvisor(), new SafeGuardAdvisor(List.of("bomb")))
+        .defaultAdvisors(new SimpleLoggerAdvisor(), new MessageChatMemoryAdvisor(chatMemory))
         .build();
     }
 }
