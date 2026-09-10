@@ -1,60 +1,36 @@
 package com.practice.firstspringai.controller;
 
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.val;
+import com.practice.firstspringai.service.ChatService;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
+@RequestMapping ("/ai")
+@RequiredArgsConstructor 
 @Slf4j
 public class ChatClientApiController {
-    @Qualifier("ollamaChatClient")
-    ChatClient ollamaClient;
+    private final ChatService chatService;
 
-    // public SpringAiController(ChatClient.Builder chatClient) {
-    //     this.chatClient = chatClient.build();
-    // }
-
-    public ChatClientApiController(@Qualifier("ollamaChatClient") ChatClient chatClient) {
-        this.ollamaClient = chatClient;
-    }
-
-
-
-    @GetMapping("/ai/chatclient")
+    @GetMapping("/chatclient")
     public String generate(@RequestParam(defaultValue = "Tell me a joke") String value) {
         log.info("Generating response for value: {}", value);
-        return ollamaClient.prompt(value)
-                .call()
-                .content();
+        return chatService.generate(value);
     }
 
-    @GetMapping("/ai/prompt")
+    @GetMapping("/prompt")
     public String useDynamicPrompt(@RequestParam(defaultValue = "Tell me a joke") String value) {
         log.info("Generating response for useDynamicPrompt: {}", value);
-        String query = "As an expert in programming "+value;
-
-        
-        return ollamaClient.prompt()
-        .user(u -> u.text(query).param("query", query))
-        .call()
-        .content();
+        return chatService.useDynamicPrompt(value);
     }
 
-
-    @GetMapping("/ai/prompt/template")
-    public String useDynamicPromptTemplate(@RequestParam(defaultValue = "Tell me a joke") String value) {
-        log.info("Generating response for useDynamicPrompt: {}", value);
-        String query = "As an expert in programming " + value;
-
-        return ollamaClient.prompt()
-                .user(u -> u.text(query).param("query", query))
-                .call()
-                .content();
+    @GetMapping("/prompt/template")
+    public String useDynamicPromptTemplate() {
+        return chatService.chatTemplate();
     }
 }
