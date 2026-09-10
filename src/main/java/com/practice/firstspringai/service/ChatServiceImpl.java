@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import reactor.core.publisher.Flux;
+
 
 @Service 
 public class ChatServiceImpl implements ChatService {
@@ -43,11 +45,10 @@ public class ChatServiceImpl implements ChatService {
         //         .call()
         //         .content();
 
-
-
             //using from joke-template.st because sometimes the prompt becomes big and hard to handle...
                 return ollamaClient.prompt().system(sys -> sys.text("You are an expert in cracking jokes"))
-                .user(u -> u.text(jokePromptResource).param("type", "vehicle").param("topic", "bike").param("maxLines", "100"))
+                // .user(u -> u.text(jokePromptResource).param("type", "vehicle").param("topic", "bike").param("maxLines", "100"))
+                .user(customValue -> customValue.text(value))
                 .call()
                 .content();
     }
@@ -102,6 +103,17 @@ public class ChatServiceImpl implements ChatService {
         Prompt prompt2 = new Prompt(sysMsg, userMessage);
 
         return ollamaClient.prompt(prompt2).call().content();
+    }
+
+
+    @Override
+    public Flux<String> streamChat(String query) {
+//we use stream() functionality as we want our response in chunks and in non-blocking manner 
+// instead of call() which blocks our call.
+        return ollamaClient.prompt().system(sys -> sys.text("You are Helpful in coding"))
+                .user(customValue -> customValue.text(query))
+                .stream()
+                .content();
     }
     
 }
