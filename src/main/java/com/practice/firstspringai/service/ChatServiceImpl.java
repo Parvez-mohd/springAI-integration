@@ -78,12 +78,12 @@ public class ChatServiceImpl implements ChatService {
         
         //1) without system prompts
 
-        String templateText = "Tell me a {type} joke about {topic}";
-        PromptTemplate strTemplate = new PromptTemplate(templateText);
+        // String templateText = "Tell me a {type} joke about {topic}";
+        // PromptTemplate strTemplate = new PromptTemplate(templateText);
 
-        Prompt prompt = strTemplate.create(Map.of(
-                "type", "sarcastic",
-                "topic", "Spring Boot"));
+        // Prompt prompt = strTemplate.create(Map.of(
+        //         "type", "sarcastic",
+        //         "topic", "Spring Boot"));
         // return ollamaClient.prompt(prompt).call().content();
 
 
