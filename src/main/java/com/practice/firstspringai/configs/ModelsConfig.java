@@ -13,9 +13,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ModelsConfig {
 
+    @Bean 
+    public InMemoryChatMemoryRepository inMemoryChatMemoryRepository() {
+        return new InMemoryChatMemoryRepository();
+    }
+
     @Bean
-    public ChatMemory chatMemory() {
+    public ChatMemory chatMemory(InMemoryChatMemoryRepository inMemoryChatMemoryRepository) {
         return MessageWindowChatMemory.builder()
+        .chatMemoryRepository(inMemoryChatMemoryRepository)
                 .maxMessages(20) 
                 .build();
     }
@@ -34,7 +40,11 @@ public class ModelsConfig {
     @Bean(name = "ollamaChatClient")
     public ChatClient ollamaChatClient(ChatModel ollamaChatModel, ChatMemory chatMemory) {
         return ChatClient.builder(ollamaChatModel)
-        .defaultAdvisors(new SimpleLoggerAdvisor(), MessageChatMemoryAdvisor.builder(chatMemory).build())
+        .defaultAdvisors(
+            new SimpleLoggerAdvisor()
+            , 
+            MessageChatMemoryAdvisor.builder(chatMemory).build()
+        )
         .build();
     }
 }

@@ -8,6 +8,10 @@ Things we did in 23 Video:
  -> Using vectorStore.add(documents) we have created list of rows of data and its embeddings in db
  id | content | metadata | embeddings
  
+in terminal:
+//trigger docker image for mariadb then run DBeaver
+docker run -d --name mariadb1 -p 3308:3306 -e MARIADB_ROOT_PASSWORD=root1234 -e MARIADB_DATABASE=springai mariadb:11.8
+
 
 
 Video 24:
