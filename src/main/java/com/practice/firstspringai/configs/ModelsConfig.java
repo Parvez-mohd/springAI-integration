@@ -28,8 +28,12 @@ public class ModelsConfig {
 
 
     @Bean(name = "openAiChatClient")
-    public ChatClient openAiChatClient(ChatModel openAiChatModel) {
-        return ChatClient.builder(openAiChatModel).build();
+    public ChatClient openAiChatClient(ChatModel openAiChatModel, ChatMemory chatMemory) {
+        return ChatClient.builder(openAiChatModel)
+                .defaultAdvisors(
+                        new SimpleLoggerAdvisor(),
+                        MessageChatMemoryAdvisor.builder(chatMemory).build())
+                .build();
     }
 
 //advisors acts as an interceptor and intercepts our inputs and do certain ops,

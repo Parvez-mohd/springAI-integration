@@ -22,11 +22,11 @@ import reactor.core.publisher.Flux;
 public class VectorServiceImpl implements VectorService {
         private final VectorStore vectorStore;
 
-        private final ChatClient ollamaClient;
+        private final ChatClient openAiChatClient;
 
-    public VectorServiceImpl(@Qualifier("ollamaChatClient") ChatClient chatClient, VectorStore vectorStore) {
+    public VectorServiceImpl(@Qualifier("openAiChatClient") ChatClient chatClient, VectorStore vectorStore) {
         this.vectorStore = vectorStore;
-        this.ollamaClient = chatClient;
+        this.openAiChatClient = chatClient;
     }
 
 
@@ -46,7 +46,7 @@ public class VectorServiceImpl implements VectorService {
         }
     }
 
-        public Flux<String> chatTemplate(String conversationId, String message) {
+        public Flux<String> chatTemplate(String id, String message) {
 
             //load data from vector db
 
@@ -66,11 +66,11 @@ public class VectorServiceImpl implements VectorService {
 
 
 
-        return ollamaClient.prompt()
+        return openAiChatClient.prompt()
                 .system(sys -> sys.text(systemMessagePromptResource).param("documents", context))
                 .user(message)
                 .advisors(advisor -> advisor.param(
-                        ChatMemory.CONVERSATION_ID, conversationId))
+                        ChatMemory.CONVERSATION_ID, id))
                 .stream()
                 .content();
     }

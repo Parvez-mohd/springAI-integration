@@ -21,7 +21,7 @@ public class VectorController {
 
         @GetMapping("/vector-memory")
     public ResponseEntity<Flux<String>> chatMemory(
-            @RequestParam(defaultValue = "default-session") String id,
+             String id,
             @RequestParam String message) {
         return ResponseEntity.ok(vectorService.chatTemplate(id, message));
     }

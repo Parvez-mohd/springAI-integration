@@ -7,5 +7,5 @@ import reactor.core.publisher.Flux;
 public interface VectorService {
     public void saveData(List<String> value);
 
-    public Flux<String> chatTemplate(String conversationId, String message);
+    public Flux<String> chatTemplate(String id, String message);
 }
