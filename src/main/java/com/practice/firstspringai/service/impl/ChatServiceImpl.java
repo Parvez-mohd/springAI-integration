@@ -1,9 +1,8 @@
-package com.practice.firstspringai.service;
+package com.practice.firstspringai.service.impl;
 
 import java.util.Map;
 
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
@@ -11,6 +10,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.ai.chat.memory.ChatMemory;
+
+import com.practice.firstspringai.service.ChatService;
 
 import reactor.core.publisher.Flux;
 
@@ -122,7 +124,7 @@ public class ChatServiceImpl implements ChatService {
         return ollamaClient.prompt()
                 .user(message)
                 .advisors(advisor -> advisor.param(
-                        AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY, conversationId
+                        ChatMemory.CONVERSATION_ID, conversationId
                 ))
                 .stream()
                 .content();
