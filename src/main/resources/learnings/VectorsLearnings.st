@@ -16,5 +16,24 @@ docker run -d --name mariadb1 -p 3308:3306 -e MARIADB_ROOT_PASSWORD=root1234 -e 
 
 Video 24:
 
--> we can even store PDF inform of chunks and store in our DB instead of List of documents as well.
--> 
+-> user -> app -> check similarity in db -> if found -> user
+                                            not found-> "This query is not in db"
+            List<Document> documents = 
+            vectorStore.similaritySearch(SearchRequest.builder()
+            .topK(5) //limited no. of top similar values need to retreive to reduce token size
+            .similarityThreshold(0.6)  //matching value is not exact but similar 
+            .query(message)
+            .build());
+
+            //similar result user query
+
+            List<String> documentList = documents.stream().map(document -> document.getText()).toList();
+            String context = String.join(", ", documentList);
+            log.info("context {}", context);
+            //pass in context
+
+Video 25:
+Instead of doing manual as above we can use 
+QuestionAnswerAdvisor :A vector database stores data that the AI model is unaware of. When a user question is sent to the AI model, a QuestionAnswerAdvisor queries the vector database for documents related to the user question.
+
+The response from the vector database is appended to the user text to provide context for the AI model to generate a response.
