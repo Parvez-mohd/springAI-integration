@@ -8,8 +8,15 @@ import java.util.List;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.client.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.document.Document;
+import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
+import org.springframework.ai.rag.preretrieval.query.expansion.MultiQueryExpander;
+import org.springframework.ai.rag.preretrieval.query.transformation.QueryTransformer;
+import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
+import org.springframework.ai.rag.retrieval.join.ConcatenationDocumentJoiner;
+import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -53,6 +60,8 @@ public class VectorServiceImpl implements VectorService {
         }
     }
 
+
+    @Override
     public Flux<String> chatTemplate(String id, String message) {
         // Load data from vector DB manually
         List<Document> documents = vectorStore.similaritySearch(
@@ -75,6 +84,8 @@ public class VectorServiceImpl implements VectorService {
                 .content();
     }
 
+
+    @Override
     public Flux<String> questionAnswerAdvisorUseCase(String id, String message) {
         String customAdviseText;
         try {
@@ -91,6 +102,53 @@ public class VectorServiceImpl implements VectorService {
                 .advisors(qaAdvisor)
                 .advisors(advisorSpec -> advisorSpec.param(
                         MessageChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY, id))
+                .stream()
+                .content();
+    }
+
+
+
+    @Override 
+    public Flux<String> moduleRAG(String message) {
+
+        QueryTransformer reWriteQueryTransformer = RewriteQueryTransformer.builder()
+        .chatClientBuilder(openAiChatClient.mutate().clone())
+    
+        .build();
+
+        log.info("reWriteQueryTransformer {}", reWriteQueryTransformer);
+
+        MultiQueryExpander multiQueryExpander = MultiQueryExpander.builder()
+        .chatClientBuilder(openAiChatClient.mutate().clone())
+        .numberOfQueries(3)
+        .build();
+
+        log.info("multiQueryExpander {}", multiQueryExpander);
+
+        VectorStoreDocumentRetriever vectorStoreDocumentRetriever = VectorStoreDocumentRetriever.builder()
+        .vectorStore(vectorStore)
+        .topK(3)
+        .similarityThreshold(0.3)
+        .build();
+
+        log.info("vectorStoreDocumentRetriever {}", vectorStoreDocumentRetriever);
+
+        ContextualQueryAugmenter contextualQueryAugmenter = ContextualQueryAugmenter.builder()
+        .build();
+    
+
+        var advisor  = RetrievalAugmentationAdvisor.builder()
+        .queryTransformers(reWriteQueryTransformer)   //pre-retrival stage we are rewriting the msg by using LLM here, we can also use translationTransformer too 
+        .queryExpander(multiQueryExpander)   //providing alternative query formulations, or by breaking down complex problems into simpler sub-queries.
+        .documentRetriever(vectorStoreDocumentRetriever)   // Retrieves relevant documents from an underlying data source based on the given query
+        .documentJoiner(new ConcatenationDocumentJoiner())
+        .queryAugmenter(contextualQueryAugmenter)   // Augments the user query with contextual data.
+        .build();
+
+
+        return openAiChatClient.prompt()
+                .user(message)
+                .advisors(advisor)
                 .stream()
                 .content();
     }

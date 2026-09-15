@@ -37,3 +37,11 @@ Instead of doing manual as above we can use
 QuestionAnswerAdvisor :A vector database stores data that the AI model is unaware of. When a user question is sent to the AI model, a QuestionAnswerAdvisor queries the vector database for documents related to the user question.
 
 The response from the vector database is appended to the user text to provide context for the AI model to generate a response.
+
+
+
+Next we learnt about Modules pre-retreval, retrevial and post-retreval and generater ang impl moduleRAG
+
+
+ETL pipeline( Extract Transform Load)
+source(PDF/WORD etc) -> documentReader -> DocumentList -> DocumentTransformer -> Transformed data -> DocumentWriter -> Database.

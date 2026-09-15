@@ -9,4 +9,5 @@ public interface VectorService {
 
     public Flux<String> chatTemplate(String id, String message);
     public Flux<String> questionAnswerAdvisorUseCase(String id, String message);
+    public Flux<String> moduleRAG(String message);
 }

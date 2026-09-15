@@ -33,4 +33,10 @@ public class VectorController {
             @RequestParam String message) {
         return ResponseEntity.ok(vectorService.questionAnswerAdvisorUseCase(id, message));
     }
+
+    @GetMapping("/model-rag")
+    public ResponseEntity<Flux<String>> moduleRAG(
+            @RequestParam String message) {
+        return ResponseEntity.ok(vectorService.moduleRAG(message));
+    }
 }
