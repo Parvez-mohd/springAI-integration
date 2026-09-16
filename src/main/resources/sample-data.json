@@ -1,0 +1,44 @@
+{
+    "users": [
+        {
+            "id": 101,
+            "name": "Sarah Chen",
+            "email": "sarah.chen@example.com",
+            "role": "Admin",
+            "isActive": true,
+            "address": {
+                "street": "742 Evergreen Terrace",
+                "city": "Springfield",
+                "zipCode": "97477",
+                "country": "USA"
+            },
+            "tags": [
+                "engineering",
+                "lead",
+                "remote"
+            ]
+        },
+        {
+            "id": 102,
+            "name": "Alex Rivera",
+            "email": "alex.rivera@example.com",
+            "role": "User",
+            "isActive": false,
+            "address": {
+                "street": "123 Market Street",
+                "city": "San Francisco",
+                "zipCode": "94105",
+                "country": "USA"
+            },
+            "tags": [
+                "design",
+                "contractor"
+            ]
+        }
+    ],
+    "meta": {
+        "page": 1,
+        "limit": 10,
+        "totalRecords": 2
+    }
+}

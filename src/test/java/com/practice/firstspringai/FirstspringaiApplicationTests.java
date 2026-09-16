@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.practice.firstspringai.dummyData.Helper;
+import com.practice.firstspringai.service.DataLoader;
 import com.practice.firstspringai.service.VectorService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,9 @@ class FirstspringaiApplicationTests {
 
 	@Autowired 
 	private VectorService vectorService;
+
+	@Autowired
+	private DataLoader dataLoader;
 
 
 	@Autowired
@@ -36,6 +40,15 @@ class FirstspringaiApplicationTests {
 		log.info("Saving data to db");
 		vectorService.saveData(Helper.getData());
 		log.info("data saved");
+	}
+
+
+	@Test
+	void dataLoader() {
+
+		var document = dataLoader.loadDocumentsFromJson();
+
+		log.info("document {}",document);
 	}
 
 }
