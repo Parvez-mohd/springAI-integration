@@ -19,7 +19,7 @@
     <properties>
         <java.version>21</java.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
-        <spring-ai.version>1.0.9</spring-ai.version>
+        <spring-ai.version>1.0.0-M6</spring-ai.version>
         <mariadb.version>3.5.1</mariadb.version>
     </properties>
 
@@ -40,21 +40,15 @@
             <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
         </dependency>
 
-
-
-       
-        <!-- <dependency>
+        <!-- Spring AI Starters (BOM handles versions) -->
+        <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-ollama</artifactId>
-        </dependency> -->
-<dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-openai</artifactId>
+            <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-transformers</artifactId>
+            <artifactId>spring-ai-transformers-spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>
@@ -66,13 +60,14 @@
 
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-vector-store-mariadb</artifactId>
+            <artifactId>spring-ai-mariadb-store-spring-boot-starter</artifactId>
         </dependency>
 
         <!-- Database & Utilities -->
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
+            <version>${mariadb.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -86,6 +81,11 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+    <groupId>org.springframework.ai</groupId>
+    <artifactId>spring-ai-pdf-document-reader</artifactId>
+</dependency>
 
         <!-- Testing -->
         <dependency>
@@ -113,6 +113,18 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <!-- Spring Milestone Repository required for 1.0.0-M* releases -->
+    <repositories>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>

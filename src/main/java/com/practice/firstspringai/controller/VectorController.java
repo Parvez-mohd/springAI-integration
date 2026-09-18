@@ -25,4 +25,18 @@ public class VectorController {
             @RequestParam String message) {
         return ResponseEntity.ok(vectorService.chatTemplate(id, message));
     }
+
+
+    @GetMapping("/question-answer")
+    public ResponseEntity<Flux<String>> questionAnswerAdvisorUseCase(
+            String id,
+            @RequestParam String message) {
+        return ResponseEntity.ok(vectorService.questionAnswerAdvisorUseCase(id, message));
+    }
+
+    @GetMapping("/model-rag")
+    public ResponseEntity<Flux<String>> moduleRAG(
+            @RequestParam String message) {
+        return ResponseEntity.ok(vectorService.moduleRAG(message));
+    }
 }
